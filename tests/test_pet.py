@@ -1,7 +1,10 @@
 import allure
+import jsonschema
 import requests
+from .schemas.pet_schema import PET_SCHEMA
 
 BASE_URL = 'http://5.181.109.28:9090/api/v3'
+
 
 @allure.feature('Pet')
 class TestPet:
@@ -15,6 +18,7 @@ class TestPet:
 
         with allure.step('Проверка текстового значения ответа'):
             assert response.text == 'Pet deleted', 'Текст ошибки не совпал с ожидаемым'
+
     @allure.title('Попытка обновить несуществующего питомца')
     def test_update_nonexistent_pet(self):
         with allure.step('Отправка запроса на обновление несуществующего питомца'):
@@ -47,16 +51,15 @@ class TestPet:
                 "name": "Non-existent Buddy",
                 "status": "available"
             }
-            response = requests.post(f'{BASE_URL}/pet', json=payload)
+            with allure.step("Отправка запроса на создание питомца"):
+                response = requests.post(f'{BASE_URL}/pet', json=payload)
 
             with allure.step("Проверка статуса ответа"):
                 assert response.status_code == 200, 'Код ответа не совпал с ожидаемым'
+                jsonschema.validate(response.json(), PET_SCHEMA)
 
             with allure.step("Проверка данных питомца в ответе"):
                 response_data = response.json()
                 assert response_data['id'] == payload['id'], 'ID питомца не совпал с ожидаемым'
                 assert response_data['name'] == payload['name'], 'Имя питомца не совпало с ожидаемым'
                 assert response_data['status'] == payload['status'], 'Статус питомца не совпал с ожидаемым'
-
-
-
