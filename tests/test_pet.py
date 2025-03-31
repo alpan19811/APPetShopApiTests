@@ -29,11 +29,11 @@ class TestPet:
             }
             response = requests.put(f'{BASE_URL}/pet', json=payload)
 
-            with allure.step("Проверка статуса ответа"):
-                assert response.status_code == 404, 'Код ответа не совпал с ожидаемым'
+        with allure.step("Проверка статуса ответа"):
+            assert response.status_code == 404, 'Код ответа не совпал с ожидаемым'
 
-            with allure.step("Проверка текстового содержимого ответа"):
-                assert response.text == "Pet not found", 'Текст ошибки не совпал с ожидаемым'
+        with allure.step("Проверка текстового содержимого ответа"):
+            assert response.text == "Pet not found", 'Текст ошибки не совпал с ожидаемым'
 
     @allure.title('Попытка получить информацию о несуществующем питомце')
     def test_get_nonexistent_pet(self):
@@ -51,14 +51,14 @@ class TestPet:
                 "name": "Non-existent Buddy",
                 "status": "available"
             }
-            with allure.step("Отправка запроса на создание питомца"):
+        with allure.step("Отправка запроса на создание питомца"):
                 response = requests.post(f'{BASE_URL}/pet', json=payload)
 
-            with allure.step("Проверка статуса ответа"):
+        with allure.step("Проверка статуса ответа"):
                 assert response.status_code == 200, 'Код ответа не совпал с ожидаемым'
                 jsonschema.validate(response.json(), PET_SCHEMA)
 
-            with allure.step("Проверка данных питомца в ответе"):
+        with allure.step("Проверка данных питомца в ответе"):
                 response_data = response.json()
                 assert response_data['id'] == payload['id'], 'ID питомца не совпал с ожидаемым'
                 assert response_data['name'] == payload['name'], 'Имя питомца не совпало с ожидаемым'
