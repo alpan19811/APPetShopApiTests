@@ -95,11 +95,11 @@ class TestPet:
             assert response.status_code == 200, 'Код ответа не совпал с ожидаемым'
             jsonschema.validate(response.json(), PET_SCHEMA)
 
-            with allure.step('Проверка обновленных данных питомца'):
-                response_data = response.json()
-                assert response_data['id'] == pet_id, 'ID питомца не совпал с ожидаемым'
-                assert response_data['name'] == update_payload['name'], 'Имя питомца не обновилось'
-                assert response_data['status'] == update_payload['status'], 'Статус питомца не обновился'
+        with allure.step('Проверка обновленных данных питомца'):
+            response_data = response.json()
+            assert response_data['id'] == pet_id, 'ID питомца не совпал с ожидаемым'
+            assert response_data['name'] == update_payload['name'], 'Имя питомца не обновилось'
+            assert response_data['status'] == update_payload['status'], 'Статус питомца не обновился'
 
     @allure.title('Удаление питомца по ID с использованием фикстуры')
     def test_delete_pet_by_id(self, create_pet):
